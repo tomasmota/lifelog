@@ -1,0 +1,22 @@
+{% comment %}
+Renders inputs according to EventType.fields
+Each field is a dict: {name, kind, required, placeholder}
+{% endcomment %}
+
+{% for f in et.fields %}
+  <div style="margin: .5rem 0;">
+    <label>{{ f.name }}</label><br />
+    {% if f.kind|lower == "int" %}
+      <input type="number" name="{{ f.name }}" {% if f.required %}required{% endif %} placeholder="{{ f.placeholder }}">
+    {% elif f.kind|lower == "float" %}
+      <input type="number" step="any" name="{{ f.name }}" {% if f.required %}required{% endif %} placeholder="{{ f.placeholder }}">
+    {% elif f.kind|lower == "string_list" %}
+      <input type="text" name="{{ f.name }}" {% if f.required %}required{% endif %} placeholder="{{ f.placeholder }}">
+      <small>comma-separated</small>
+    {% else %}
+      <input type="text" name="{{ f.name }}" {% if f.required %}required{% endif %} placeholder="{{ f.placeholder }}">
+    {% endif %}
+  </div>
+{% empty %}
+  <p><em>No fields for this type.</em></p>
+{% endfor %}

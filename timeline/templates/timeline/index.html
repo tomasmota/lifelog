@@ -1,0 +1,36 @@
+{% extends "timeline/base.html" %} {% block body %}
+<h1>Lifelog</h1>
+
+<form
+  hx-post="{% url 'timeline:create_event' %}"
+  hx-target="#events"
+  hx-swap="innerHTML"
+  method="post"
+>
+  {% csrf_token %}
+  <label>Event type</label><br />
+  <select id="event-type" name="event_type" required>
+    <option value="" selected disabled>Choose…</option>
+    {% for et in event_types %}
+    <option value="{{ et.id }}">{{ et.name }}</option>
+    {% endfor %}
+  </select>
+
+  <div
+    id="fields"
+    hx-get="{% url 'timeline:fields' %}"
+    hx-trigger="change from:#event-type"
+    hx-include="#event-type"
+    hx-target="this"
+    hx-swap="innerHTML"
+  >
+    <!-- HTMX will inject the inputs here -->
+  </div>
+
+  <button type="submit" style="margin-top: 0.5rem">Add</button>
+</form>
+
+<hr />
+
+<div id="events">{% include "timeline/_events.html" %}</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+# OS/editor
+.DS_Store
+.idea/
+.vscode/
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Django
+db.sqlite3
+db.sqlite3-*
+*.sqlite3
+*.db
+media/
+staticfiles/
+*.log
+backup.json
+
+# Testing & tooling
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.cache/
+
+# Nix & direnv
+.direnv/
+result
+.nix-*
+
+# Node (future)
+node_modules/
+
+# Virtualenvs (if anyone goes off-Nix)
+.venv/
+venv/
+env/
