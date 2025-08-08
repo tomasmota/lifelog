@@ -44,7 +44,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "lifelog.wsgi.application"
 ASGI_APPLICATION = "lifelog.asgi.application"
 
 DATABASES = {
@@ -64,5 +63,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]  
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

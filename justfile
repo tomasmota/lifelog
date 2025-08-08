@@ -1,4 +1,9 @@
-run:
+# Run Django dev server
+run: 
+    python manage.py runserver
+
+# Run via ASGI
+uvicorn:
     uvicorn lifelog.asgi:application --reload --port 8000
 
 # Migrations

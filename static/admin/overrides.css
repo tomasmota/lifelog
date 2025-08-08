@@ -1,0 +1,92 @@
+/* Use system UI fonts for a friendlier look */
+:root {
+  /* Brand palette (Tailwind-ish blue) */
+  --primary: #2563eb;            /* buttons, accents */
+  --secondary: #1d4ed8;          /* hover/active */
+  --accent: #93c5fd;             /* highlights */
+  --link-fg: #1d4ed8;
+  --header-bg: #1e3a8a;          /* top bar background */
+  --header-color: #eef2ff;       /* top bar text */
+  --hairline-color: #e2e8f0;
+  --body-bg: #f8fafc;            /* page background */
+  --darkened-bg: #ffffff;        /* content background */
+}
+
+body, input, textarea, select, .button, .submit-row input {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans",
+               sans-serif;
+}
+
+/* Page background & content area */
+#container {
+  background: var(--body-bg);
+}
+#content {
+  background: var(--darkened-bg);
+  border: 1px solid var(--hairline-color);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+/* Top header */
+#header {
+  background: var(--header-bg);
+  color: var(--header-color);
+  border-bottom: none;
+}
+#branding h1, #branding h1 a:link, #branding h1 a:visited {
+  color: var(--header-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* Modules / boxes */
+.module, .inline-group, .app-auth.module, .app-timeline.module {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--hairline-color);
+}
+.module caption, .inline-group h2 {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* Tables */
+#changelist table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+#changelist table thead th {
+  background: #f8fafc;
+  border-bottom: 1px solid var(--hairline-color);
+}
+
+/* Buttons */
+.button, .submit-row input {
+  border-radius: 10px;
+}
+.button.default, .submit-row input.default {
+  background: var(--primary);
+}
+.button.default:hover, .submit-row input.default:hover {
+  background: var(--secondary);
+}
+
+/* Forms */
+fieldset.module.aligned, .inline-group .inline-related {
+  border-radius: 12px;
+  border: 1px solid var(--hairline-color);
+}
+fieldset.module.aligned {
+  background: #ffffff;
+}
+
+/* Make JSON fields easier to read */
+textarea.vLargeTextField {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+               "Liberation Mono", "Courier New", monospace;
+  line-height: 1.35;
+}
+

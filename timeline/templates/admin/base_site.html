@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}Lifelog Admin{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/overrides.css' %}">
+{% endblock %}
+
+{% block branding %}
+  <h1 id="site-name">
+    <a href="{% url 'admin:index' %}">Lifelog • Admin</a>
+  </h1>
+{% endblock %}
+
+{% block nav-global %}
+  <a href="{% url 'timeline:index' %}" class="button">← Back to app</a>
+{% endblock %}
