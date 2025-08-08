@@ -1,13 +1,38 @@
-{% load tz %}
-<h2>Events</h2>
-<ol>
-  {% for e in events %}
-    <li>
-      <strong>{{ e.type.name }}</strong>
-      <small>@ {{ e.timestamp|localtime|date:"Y-m-d H:i" }}</small><br />
-      <pre>{{ e.data_json }}</pre>
-    </li>
-  {% empty %}
-    <li><em>No events yet.</em></li>
-  {% endfor %}
-</ol>
+{% load tz extra %}
+{% if events %}
+  <ol class="space-y-3">
+    {% for e in events %}
+      <li class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+        <div class="flex items-baseline justify-between gap-3">
+          <div class="text-sm font-semibold text-slate-900 capitalize">{{ e.type.name }}</div>
+          <time class="text-xs text-slate-500" datetime="{{ e.timestamp|localtime|date:'c' }}">
+            {{ e.timestamp|localtime|date:"Y-m-d H:i" }}
+          </time>
+        </div>
+
+        {% if e.data %}
+          <div class="mt-2 flex flex-wrap gap-1.5">
+            {% for k, v in e.data.items %}
+              <span class="inline-flex items-center rounded-lg bg-slate-100 px-2 py-1 text-xs text-slate-700">
+                <span class="font-medium">{{ k }}</span>
+                <span class="mx-1.5 text-slate-400">•</span>
+                <span class="truncate">
+                  {% if v|is_list %}
+                    {{ v|as_csv }}
+                  {% else %}
+                    {{ v }}
+                  {% endif %}
+                </span>
+              </span>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="mt-2 text-sm text-slate-500">No details.</p>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ol>
+{% else %}
+  <p class="text-sm text-slate-500"><em>No events yet.</em></p>
+{% endif %}
+

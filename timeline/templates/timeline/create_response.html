@@ -1,0 +1,20 @@
+{% include "timeline/_events.html" %}
+
+<!-- Out-of-band flash area -->
+<div id="flash" hx-swap-oob="true">
+  {% if ok %}
+    <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-800">
+      ✅ Event “{{ et.name }}” added.
+    </div>
+  {% else %}
+    <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm text-rose-800">
+      <div class="font-medium mb-1">Couldn’t save:</div>
+      <ul class="list-disc list-inside">
+        {% for err in errors %}
+          <li>{{ err }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+</div>
+

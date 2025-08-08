@@ -1,22 +1,42 @@
 {% comment %}
-Renders inputs according to EventType.fields
-Each field is a dict: {name, kind, required, placeholder}
+Renders inputs according to EventType.fields (list of dicts)
+Each field: {name, kind, required, placeholder}
 {% endcomment %}
 
 {% for f in et.fields %}
-  <div style="margin: .5rem 0;">
-    <label>{{ f.name }}</label><br />
-    {% if f.kind|lower == "int" %}
-      <input type="number" name="{{ f.name }}" {% if f.required %}required{% endif %} placeholder="{{ f.placeholder }}">
-    {% elif f.kind|lower == "float" %}
-      <input type="number" step="any" name="{{ f.name }}" {% if f.required %}required{% endif %} placeholder="{{ f.placeholder }}">
-    {% elif f.kind|lower == "string_list" %}
-      <input type="text" name="{{ f.name }}" {% if f.required %}required{% endif %} placeholder="{{ f.placeholder }}">
-      <small>comma-separated</small>
+  {% with kind=f.kind|default:'string'|lower %}
+  <div>
+    <label class="block text-sm font-medium text-slate-700">{{ f.name }}</label>
+
+    {% if kind == 'int' %}
+      <input type="number" name="{{ f.name }}"
+             {% if f.required %}required{% endif %}
+             placeholder="{{ f.placeholder }}"
+             class="mt-1 block w-full rounded-xl border-slate-300 focus:border-brand-500 focus:ring-brand-500">
     {% else %}
-      <input type="text" name="{{ f.name }}" {% if f.required %}required{% endif %} placeholder="{{ f.placeholder }}">
+      {% if kind == 'float' %}
+        <input type="number" step="any" name="{{ f.name }}"
+               {% if f.required %}required{% endif %}
+               placeholder="{{ f.placeholder }}"
+               class="mt-1 block w-full rounded-xl border-slate-300 focus:border-brand-500 focus:ring-brand-500">
+      {% else %}
+        {% if kind == 'string_list' %}
+          <input type="text" name="{{ f.name }}"
+                 {% if f.required %}required{% endif %}
+                 placeholder="{{ f.placeholder }}"
+                 class="mt-1 block w-full rounded-xl border-slate-300 focus:border-brand-500 focus:ring-brand-500">
+          <p class="mt-1 text-xs text-slate-500">Comma-separated</p>
+        {% else %}
+          <input type="text" name="{{ f.name }}"
+                 {% if f.required %}required{% endif %}
+                 placeholder="{{ f.placeholder }}"
+                 class="mt-1 block w-full rounded-xl border-slate-300 focus:border-brand-500 focus:ring-brand-500">
+        {% endif %}
+      {% endif %}
     {% endif %}
   </div>
+  {% endwith %}
 {% empty %}
-  <p><em>No fields for this type.</em></p>
+  <p class="text-sm text-slate-500"><em>No fields for this type.</em></p>
 {% endfor %}
+

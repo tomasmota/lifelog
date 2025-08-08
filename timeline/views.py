@@ -4,6 +4,9 @@ from typing import Any
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_http_methods
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
+
 from .models import EventType, Event
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -26,11 +29,27 @@ def create_event(request: HttpRequest) -> HttpResponse:
         return HttpResponseBadRequest("missing event_type")
     et = get_object_or_404(EventType, pk=et_id)
 
-    # Build JSON data based on EventType.fields
-    # Field kinds: "string" | "int" | "float" | "string_list"
-    errors: list[str] = []
-    data: dict[str, Any] = {}
+    # Optional timestamp
+    raw_ts = (request.POST.get("timestamp") or "").strip()
+    when = None
+    if raw_ts:
+        parsed = parse_datetime(raw_ts)
+        if parsed is None:
+            try:
+                parsed = timezone.datetime.fromisoformat(raw_ts)  # e.g. "2025-08-08T12:34"
+            except Exception:
+                parsed = None
+        if parsed is not None:
+            if timezone.is_naive(parsed):
+                parsed = timezone.make_aware(parsed, timezone.get_current_timezone())
+            when = parsed
 
+    errors: list[str] = []
+    if raw_ts and when is None:
+        errors.append("Invalid value for timestamp (datetime-local)")
+
+    # Build JSON data based on EventType.fields
+    data: dict[str, Any] = {}
     fields = et.fields or []
     for f in fields:
         name = f.get("name")
@@ -58,10 +77,23 @@ def create_event(request: HttpRequest) -> HttpResponse:
             errors.append(f"Invalid value for {name} ({kind})")
 
     if errors:
-        return HttpResponseBadRequest("\n".join(errors))
+        events = Event.objects.select_related("type").all()
+        resp = render(
+            request,
+            "timeline/create_response.html",
+            {"events": events, "ok": False, "errors": errors, "et": et},
+        )
+        resp.status_code = 400
+        return resp
 
-    Event.objects.create(type=et, data=data)
+    Event.objects.create(type=et, data=data, timestamp=when or timezone.now())
 
-    # Re-render the events list (HTMX will swap)
     events = Event.objects.select_related("type").all()
-    return render(request, "timeline/_events.html", {"events": events})
+    resp = render(
+        request,
+        "timeline/create_response.html",
+        {"events": events, "ok": True, "errors": [], "et": et},
+    )
+    resp["HX-Trigger"] = json.dumps({"event-added": {"type": et.name}})
+    return resp
+
